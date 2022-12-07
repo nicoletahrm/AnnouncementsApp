@@ -1,0 +1,11 @@
+<div class="app-container">
+  <app-categories
+    (selectedCategoryEmitter)="changeCategory($event)"
+  ></app-categories>
+
+  <button mat-raised-button color="warn" [routerLink]="'/add'">Add</button>
+
+  <div *ngFor="let announcement of filtredAnnouncement" class="announcement">
+    <app-announcement [announc]="announcement"></app-announcement>
+  </div>
+</div>

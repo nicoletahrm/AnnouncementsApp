@@ -1,0 +1,14 @@
+<div class="announcement-container">
+  <p class="message">{{ announcement.title }}</p>
+  <span class="title">{{ announcement.message }}</span>
+  <span class="author">{{ announcement.author | preposition }}</span>
+
+  <button
+    mat-button
+    color="warn"
+    (click)="deleteAnnouncement()"
+    [routerLink]="'/home'"
+  >
+    Delete
+  </button>
+</div>
