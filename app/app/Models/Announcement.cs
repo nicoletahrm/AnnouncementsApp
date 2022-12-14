@@ -4,22 +4,24 @@ namespace app.Models
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
+        public string Message { get; set; }
         public string Author { get; set; }
-        public string CategoryId { get; set; }
+        public string ImageUrl { get; set; }
+        public string Category { get; set; }
 
         public Announcement()
         {
 
         }
 
-        public Announcement(Guid id, string title, string description, string author, string categoryId)
+        public Announcement(Guid id, string title, string message, string author, string imageUrl, string categoryId)
         {
             this.Id = id;
             this.Title = title;
-            this.Description = description;
+            this.Message = message;
             this.Author = author;
-            this.CategoryId = categoryId;
+            this.ImageUrl = imageUrl;
+            this.Category = categoryId;
         }
 
     }

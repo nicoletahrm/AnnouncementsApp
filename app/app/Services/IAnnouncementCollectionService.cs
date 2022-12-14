@@ -4,6 +4,6 @@ namespace app.Services
 {
     public interface IAnnouncementCollectionService : ICollectionService<Announcement>
     {
-        List<Announcement> GetAnnouncementsByCategoryId(string categoryId);
+        Task<List<Announcement>> GetAnnouncementsByCategoryId(string categoryId);
     }
 }

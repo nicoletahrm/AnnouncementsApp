@@ -1,4 +1,6 @@
 using app.Services;
+using app.Settings;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddSingleton<IAnnouncementCollectionService, AnnouncementCollectionService>();
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection(nameof(MongoDBSettings)));
+builder.Services.AddSingleton<IMongoDBSettings>(sp => sp.GetRequiredService<IOptions<MongoDBSettings>>().Value);
+
 
 var app = builder.Build();
 

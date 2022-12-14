@@ -1,77 +1,63 @@
 ﻿using app.Models;
+using app.Settings;
+using MongoDB.Driver;
 
 namespace app.Services
 {
     public class AnnouncementCollectionService : IAnnouncementCollectionService
     {
-        List<Announcement> _announcements = new List<Announcement>()
-        {
-            new Announcement { Id = Guid.NewGuid(), Title = "First Announcement", Description = "First Announcement Description", Author = "Author_1", CategoryId = "1" },
-            new Announcement { Id = Guid.NewGuid(), Title = "Second Announcement", Description = "Second Announcement Description", Author = "Author_1", CategoryId = "1" },
-            new Announcement { Id = Guid.NewGuid(), Title = "Third Announcement", Description = "Third Announcement Description", Author = "Author_2", CategoryId = "1" },
-            new Announcement { Id = Guid.NewGuid(), Title = "Fourth Announcement", Description = "Fourth Announcement Description", Author = "Author_3", CategoryId = "1" },
-            new Announcement { Id = Guid.NewGuid(), Title = "Fifth Announcement", Description = "Fifth Announcement Description", Author = "Author_4", CategoryId = "1" },
-        };
+        private readonly IMongoCollection<Announcement> _announcements;
 
-        public Announcement Get(Guid id)
+        public AnnouncementCollectionService(IMongoDBSettings settings)
         {
-            throw new NotImplementedException();
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+
+            _announcements = database.GetCollection<Announcement>(settings.AnnouncementsCollectionName);
         }
 
-        public List<Announcement> GetAll()
+        public async Task<List<Announcement>> GetAll()
         {
-            return _announcements;
+            var result = await _announcements.FindAsync(announcement => true);
+            return result.ToList();
         }
-
-        public List<Announcement> GetAnnouncementsByCategoryId(string categoryId)
+        public async Task<Announcement?> Get(Guid id)
         {
-            throw new NotImplementedException();
+            return await _announcements.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
-
-        public bool Create(Announcement model)
+        public async Task<bool> Create(Announcement announcement)
         {
-            if (model != null)
-            {
-                model.Id = Guid.NewGuid();
-                _announcements.Add(model);
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool Update(Guid id, Announcement model)
-        {
-
-            var announcementToUpdate = _announcements.FirstOrDefault(x => x.Id == id);
-
-            if (announcementToUpdate == null)
+            if (announcement == null)
             {
                 return false;
             }
+            await _announcements.InsertOneAsync(announcement);
+            return true;
 
-            Guid oldId = announcementToUpdate.Id;
-
-            _announcements.Remove(announcementToUpdate);
-            model.Id = oldId;
-            _announcements.Add(model);
-
+        }
+        public async Task<bool> Update(Guid id, Announcement announcement)
+        {
+            var r = await _announcements.ReplaceOneAsync(x => x.Id == id, announcement);
+            if (r.ModifiedCount != 0)
+            {
+                return false;
+            }
             return true;
         }
-
-        public bool Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
-            var announcementToDelete = _announcements.FirstOrDefault(x => x.Id == id);
-
-            if (announcementToDelete != null)
-            {
-                _announcements.Remove(announcementToDelete);
-                return true;
-            }
-            else
+            var r = await _announcements.DeleteOneAsync(x => x.Id == id);
+            if (!r.IsAcknowledged)
             {
                 return false;
             }
+            return true;
+        }
+        public async Task<List<Announcement>> GetAnnouncementsByCategoryId(string categoryId)
+        {
+
+            var result = (await _announcements.FindAsync(announcement => announcement.Category == categoryId)).ToList();
+            return result;
         }
     }
 }
