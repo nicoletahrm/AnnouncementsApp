@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Announcement } from '../announcement';
 import { Category } from '../category';
 import { AnnouncementService } from '../services/announcement.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-add-announcement',
@@ -17,13 +18,16 @@ export class AddAnnouncementComponent implements OnInit {
   categories: string[] = Object.keys(Category);
   selectedCategory: string = '';
 
-  constructor(private service: AnnouncementService) {}
+  constructor(
+    private announcementService: AnnouncementService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {}
 
   addAnnouncement() {
     this.newAnnouncement = {
-      id: this.service.getAnnouncements.length.toString() + 1,
+      id: this.announcementService.getAnnouncements.length.toString() + 1,
       title: this.title,
       message: this.message,
       author: this.author,
@@ -31,6 +35,10 @@ export class AddAnnouncementComponent implements OnInit {
       category: this.selectedCategory as Category,
     };
 
-    this.service.postAnnouncement(this.newAnnouncement).subscribe();
+    this.announcementService
+      .postAnnouncement(this.newAnnouncement)
+      .subscribe((r) =>
+        this.notificationService.sendMessage('BroadcastMessage', [r])
+      );
   }
 }

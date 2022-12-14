@@ -20,9 +20,23 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddSingleton<IAnnouncementCollectionService, AnnouncementCollectionService>();
+
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection(nameof(MongoDBSettings)));
 builder.Services.AddSingleton<IMongoDBSettings>(sp => sp.GetRequiredService<IOptions<MongoDBSettings>>().Value);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CorsPolicy",
+                              policy =>
+                              {
+                                  policy.WithOrigins("http://localhost:4200")
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod()
+                                  .AllowCredentials();
+                              });
+});
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -31,6 +45,19 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseCors("CorsPolicy");
+
+    app.UseWebSockets(new WebSocketOptions
+    {
+        KeepAliveInterval = TimeSpan.Zero,
+    });
+
+    app.UseRouting();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapHub<NotificationsHub>("/hub/notifications");
+    });
 }
 
 app.UseHttpsRedirection();

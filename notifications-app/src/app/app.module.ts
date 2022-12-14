@@ -16,6 +16,7 @@ import { AnnouncementService } from './services/announcement.service';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { NotificationService } from './services/notification.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     HttpClientModule,
   ],
-  providers: [AnnouncementService],
+  providers: [AnnouncementService, NotificationService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

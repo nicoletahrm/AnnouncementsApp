@@ -5,6 +5,10 @@
 
   <button mat-raised-button color="warn" [routerLink]="'/add'">Add</button>
 
+  <p>
+    {{notificationMessage}}
+  </p>
+  
   <div *ngFor="let announcement of filtredAnnouncement" class="announcement">
     <app-announcement [announc]="announcement"></app-announcement>
   </div>
