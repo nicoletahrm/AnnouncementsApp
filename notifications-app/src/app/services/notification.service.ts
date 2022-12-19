@@ -18,7 +18,7 @@ export class NotificationService {
   initWebSocket() {
     this.connection = new HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)
-      .withUrl('https://localhost:7166/hub/notifications')
+      .withUrl('https://localhost:7074/hub/notifications')
       .build();
 
     this.connection.on('message_received', (body: any) => {
@@ -31,6 +31,7 @@ export class NotificationService {
       // Here we can configure what to do upon starting the connection
     });
   }
+  
   sendMessage(methodName: string, parameters?: any[]) {
     this.connection.send(methodName, parameters);
   }

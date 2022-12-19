@@ -13,7 +13,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private announcementService: AnnouncementService,
     private notificationService: NotificationService
-  ) {}
+   )
+  {}
 
   announcements: Announcement[] = [];
   filtredAnnouncement: Announcement[];

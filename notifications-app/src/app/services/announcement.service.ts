@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs';
 export class AnnouncementService {
   constructor(private http: HttpClient) {}
 
-  baseURL = 'https://newsapi20221108120432.azurewebsites.net/api/Announcements';
+  baseURL = 'https://localhost:7074/Announcement';
 
   readonly httpOptions = {
     headers: new HttpHeaders({

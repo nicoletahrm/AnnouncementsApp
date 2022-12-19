@@ -27,7 +27,7 @@ export class AddAnnouncementComponent implements OnInit {
 
   addAnnouncement() {
     this.newAnnouncement = {
-      id: this.announcementService.getAnnouncements.length.toString() + 1,
+      id: '',
       title: this.title,
       message: this.message,
       author: this.author,

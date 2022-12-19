@@ -24,13 +24,19 @@ namespace app.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> Create(Announcement announcement)
+        public async Task<bool> Create([FromBody]AnnouncementCreation announcementCreation)
         {
-            if (announcement.Id == Guid.Empty)
-            {
-                announcement.Id = Guid.NewGuid();
 
-            }
+            Announcement announcement = new Announcement
+            {
+                Id = Guid.NewGuid(),
+                Author = announcementCreation.Author,
+                Category = announcementCreation.Category,
+                ImageUrl = announcementCreation.ImageUrl,
+                Message = announcementCreation.Message,
+                Title = announcementCreation.Title
+
+            };
             await _announcementCollectionService.Create(announcement);
             return true;
         }
